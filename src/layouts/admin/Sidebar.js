@@ -117,8 +117,16 @@ function Sidebar({ menuOpen, setMenuOpen, toggleMenu }) {
         <hr className="sidebar-divider my-0" />
 
         {/* <!-- Nav Item - Dashboard --> */}
-        <li className="nav-item active">
+        {/* <li className="nav-item active">
           <Link to="/admin/dashboard" className="nav-link">
+            <i className="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </Link>
+        </li> */}
+
+        {/* <!-- Nav Item - Dashboard --> */}
+        <li className="nav-item active">
+          <Link to="/admin/dashboard2" className="nav-link">
             <i className="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span>
           </Link>
@@ -299,9 +307,39 @@ function Sidebar({ menuOpen, setMenuOpen, toggleMenu }) {
           </div>
         </li>
 
+        {/* Excel */}
+        <li className="nav-item">
+          <a
+            className="nav-link collapsed"
+            href="#"
+            data-toggle="collapse"
+            data-target="#collapseNine"
+            aria-expanded="true"
+            aria-controls="collapseNine"
+          >
+            <i className="fa fa-solid fa-calendar"></i>
+            <span>Excel</span>
+          </a>
+          <div
+            id="collapseNine"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div className="bg-white py-2 collapse-inner rounded">
+              {/* <Link to="/admin/all-industries" className="collapse-item">
+                All Excel
+              </Link> */}
+              <Link to="/admin/upload-excel" className="collapse-item">
+                Upload Excel
+              </Link>
+            </div>
+          </div>
+        </li>
+
         {/* City */}
 
-        <li className="nav-item">
+        {/* <li className="nav-item">
           <a
             className="nav-link collapsed"
             href="#"
@@ -331,7 +369,7 @@ function Sidebar({ menuOpen, setMenuOpen, toggleMenu }) {
               </Link>
             </div>
           </div>
-        </li>
+        </li> */}
 
         {/* <!-- Divider --> */}
         <hr className="sidebar-divider" />

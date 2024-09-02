@@ -1,0 +1,16 @@
+.custom-file-label::after {
+    content: "Browse";
+    background-color: #007bff; 
+    color: white;
+    cursor: pointer;             
+  }
+  
+  .custom-file-label {
+    background-color: #f8f9fa; 
+    color: #343a40; 
+    cursor: pointer;            
+  }
+  
+  .custom-file-label::after {
+    border-left: 1px solid #dee2e6; 
+  }

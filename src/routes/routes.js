@@ -25,6 +25,7 @@ import AllCities from "../layouts/admin/AllCities";
 import AllJobTitles from "../layouts/admin/AllJobTitles";
 import MapIndustry from "../layouts/admin/MapIndustry";
 import MapCompany from "../layouts/admin/MapCompany";
+// import MapCompany2 from "../layouts/admin/MapCompany";
 import MapJobTitle from "../layouts/admin/MapJobTitle";
 import MapCountry from "../layouts/admin/MapCountry";
 import MapState from "../layouts/admin/MapState";
@@ -40,14 +41,23 @@ import BlockUsers from "../layouts/admin/BlockUsers";
 import ViewAllUsers from "../layouts/admin/ViewAllUsers";
 import ViewUserDetails from "../layouts/admin/ViewUserDetails";
 import ConcernUsers from "../layouts/admin/concernUsers";
+import Dashboard2 from "../layouts/admin/Dashboard2";
+import UploadExel from "../layouts/admin/UploadExel";
 
 const routes = [
-  { path: "/admin", exact: true, name: "Admin", component: Dashboard },
+  { path: "/admin", exact: true, name: "Admin", component: Dashboard2 },
   {
     path: "/admin/dashboard",
     exact: true,
     name: "Dashboard",
-    component: Dashboard,
+    component: Dashboard2,
+  },
+
+  {
+    path: "/admin/dashboard2",
+    exact: true,
+    name: "Dashboard2",
+    component: Dashboard2,
   },
   { path: "/admin/profile", exact: true, name: "Profile", component: Profile },
   {
@@ -106,6 +116,12 @@ const routes = [
     name: "MapCompany",
     component: MapCompany,
   },
+  // {
+  //   path: "/admin/map-company2",
+  //   exact: true,
+  //   name: "MapCompany2",
+  //   component: MapCompany2,
+  // },
 
   //Mapping - Job Title
   {
@@ -263,6 +279,13 @@ const routes = [
     exact: true,
     name: "ViewUserDetails",
     component: ViewUserDetails,
+  },
+
+  {
+    path: "/admin/upload-excel",
+    exact: true,
+    name: "UploadExcel",
+    component: UploadExel,
   },
   
 ];

@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./EventCard.css";
 
-function Dashboard() {
+function Dashboard2() {
   
   const imageBaseUrl = process.env.REACT_APP_API_URL;
 
@@ -41,14 +41,14 @@ function Dashboard() {
 
   useEffect(() => {
     axios
-      .get("/api/count-mapping-data")
+      .get("https://app.klout.club/api/mapping/v1/company-master/all-company")
       .then((response) => {
-        setTotalCity(response.data.cityCount);
-        setTotalState(response.data.stateCount);
-        setTotalCompany(response.data.companyCount);
-        setTotalCountry(response.data.countryCount);
-        setTotalIndustry(response.data.industryCount);
-        setTotalJobTitle(response.data.jobTitleCount);
+        // setTotalCity(response.data.cityCount);
+        // setTotalState(response.data.stateCount);
+        setTotalCompany(response.data.data.totalCompanies);
+        // setTotalCountry(response.data.countryCount);
+        // setTotalIndustry(response.data.industryCount);
+        // setTotalJobTitle(response.data.jobTitleCount);
       })
       .catch((error) => {
         console.error("Error fetching event count:", error);
@@ -87,6 +87,8 @@ function Dashboard() {
             }}
           >
             <Link to="/admin/all-companies" style={{ textDecoration: "none" }}>
+            {/* <Link style={{ textDecoration: "none" }}> */}
+
               <div className="card-body">
                 <div className="row no-gutters align-items-center p-2">
                   <div className="col mr-2">
@@ -106,8 +108,8 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* <!-- Total Attendees --> */}
-        <div className="col-xl-4 col-md-6 mb-4">
+        
+        {/* <div className="col-xl-4 col-md-6 mb-4">
           <div
             className="card border-left-success shadow h-100 py-2"
             style={{
@@ -129,16 +131,15 @@ function Dashboard() {
                     </div>
                   </div>
                   <div className="col-auto">
-                    {/* <i className="fas fa-users fa-2x text-gray-600"></i> */}
                   </div>
                 </div>
               </div>
             </Link>
           </div>
-        </div>
+        </div> */}
 
-        {/* <!-- Total Sponsors --> */}
-        <div className="col-xl-4 col-md-6 mb-4">
+        
+        {/* <div className="col-xl-4 col-md-6 mb-4">
           <div
             className="card border-left-warning shadow h-100 py-2"
             style={{
@@ -160,13 +161,12 @@ function Dashboard() {
                     </div>
                   </div>
                   <div className="col-auto">
-                    {/* <i className="fa fa-solid fa-user-secret fa-2x text-gray-600"></i> */}
                   </div>
                 </div>
               </div>
             </Link>
           </div>
-        </div>
+        </div> */}
 
         {/* <!-- Upcoming Events --> */}
         {/* <div className="col-xl-3 col-md-6 mb-4">
@@ -198,8 +198,8 @@ function Dashboard() {
         </div> */}
       </div>
 
-      {/* <!-- Content Row 2 --> */}
-      <div className="row m-3">
+      
+      {/* <div className="row m-3">
         <div className="col-xl-4 col-md-6 mb-4">
           <div
             className="card border-left-primary shadow h-100 py-2"
@@ -222,7 +222,6 @@ function Dashboard() {
                     </div>
                   </div>
                   <div className="col-auto">
-                    {/* <i className="fas fa-calendar fa-2x text-gray-600"></i> */}
                   </div>
                 </div>
               </div>
@@ -230,7 +229,7 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* <!-- Total Attendees --> */}
+        
         <div className="col-xl-4 col-md-6 mb-4">
           <div
             className="card border-left-success shadow h-100 py-2"
@@ -253,7 +252,7 @@ function Dashboard() {
                     </div>
                   </div>
                   <div className="col-auto">
-                    {/* <i className="fas fa-users fa-2x text-gray-600"></i> */}
+                    
                   </div>
                 </div>
               </div>
@@ -261,7 +260,7 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* <!-- Total Sponsors --> */}
+      
         <div className="col-xl-4 col-md-6 mb-4">
           <div
             className="card border-left-warning shadow h-100 py-2"
@@ -272,7 +271,7 @@ function Dashboard() {
               opacity: "1",
             }}
           >
-            <Link style={{ textDecoration: "none" }}>
+            <Link to="/admin/all-cities" style={{ textDecoration: "none" }}>
               <div className="card-body">
                 <div className="row no-gutters align-items-center p-2">
                   <div className="col mr-2">
@@ -284,16 +283,16 @@ function Dashboard() {
                     </div>
                   </div>
                   <div className="col-auto">
-                    {/* <i className="fa fa-solid fa-location-pin fa-2x text-gray-600"></i> */}
+                    
                   </div>
                 </div>
               </div>
             </Link>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }
 
-export default Dashboard;
+export default Dashboard2;

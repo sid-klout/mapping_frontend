@@ -13,124 +13,103 @@ function AllCompanies() {
   const [search, setSearch] = useState("");
   const [nameFilter, setNameFilter] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalCompanies, setTotalCompanies] = useState(0);
 
-  const itemsPerPage = 50;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    axios.get("https://app.klout.club/api/mapping/v1/company-master/all-company").then((res) => {
-      
-      if (res.data.status) {  
-        console.log(res)
-        setData(res.data.data.companies);
-        setTotalCompanies(res.data.data.totalCompanies);
+    axios.get("/api/companies").then((res) => {
+      if (res.data.status === 200) {
+        setData(res.data.data);
       }
 
       setLoading(false);
     });
   }, []);
 
-  // useEffect(() => {
-  //   const filtered = data.filter((d) => {
-  //     const nameMatch = d.name.toLowerCase().includes(nameFilter.toLowerCase());
-  //     return nameMatch;
-  //   });
-
-  //   const searchFiltered = filtered.filter((d) =>
-  //     d.name.toLowerCase().includes(search.toLowerCase())
-  //   );
-
-  //   setFilteredData(searchFiltered);
-  // }, [nameFilter, search, data]);
-
-  const handlePageChange = (selectedPage) => {
-    axios.get(`https://app.klout.club/api/mapping/v1/company-master/all-company?page=${selectedPage}&&search=${search}`).then((res) => {
-      
-      if (res.data.status) {  
-        console.log(res)
-        setData(res.data.data.companies);
-        setTotalCompanies(res.data.data.totalCompanies);
-      }
-
-      setLoading(false);
+  useEffect(() => {
+    const filtered = data.filter((d) => {
+      const nameMatch = d.name.toLowerCase().includes(nameFilter.toLowerCase());
+      return nameMatch;
     });
 
+    const searchFiltered = filtered.filter((d) =>
+      d.name.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setFilteredData(searchFiltered);
+  }, [nameFilter, search, data]);
+
+  const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage);
   };
 
-  const handleChange = (e) => {
-    setSearch(e.target.value);
-    axios.get(`https://app.klout.club/api/mapping/v1/company-master/all-company?page=1&&search=${search}`).then((res) => {
-      
-      if (res.data.status) {  
-        console.log(res)
-        setData(res.data.data.companies);
-        setTotalCompanies(res.data.data.totalCompanies);
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const deleteRow = (e, id) => {
+    e.preventDefault();
+
+    const thisClicked = e.currentTarget;
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`/api/destroy-companies/${id}`)
+          .then(function (res) {
+            Swal.fire({
+              icon: "success",
+              title: res.data.message,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            thisClicked.closest("tr").remove();
+          })
+          .catch(function (error) {
+            Swal.fire({
+              icon: "error",
+              title: "An Error Occured!",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          });
       }
-
-      setLoading(false);
     });
-  }
-
-  // const paginatedData = filteredData.slice(
-  //   (currentPage - 1) * itemsPerPage,
-  //   currentPage * itemsPerPage
-  // );
-
-  // const deleteRow = (e, id) => {
-  //   e.preventDefault();
-
-  //   const thisClicked = e.currentTarget;
-
-  //   Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "You won't be able to revert this!",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Yes, delete it!",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       axios
-  //         .delete(`/api/destroy-companies/${id}`)
-  //         .then(function (res) {
-  //           Swal.fire({
-  //             icon: "success",
-  //             title: res.data.message,
-  //             showConfirmButton: false,
-  //             timer: 1500,
-  //           });
-  //           thisClicked.closest("tr").remove();
-  //         })
-  //         .catch(function (error) {
-  //           Swal.fire({
-  //             icon: "error",
-  //             title: "An Error Occured!",
-  //             showConfirmButton: false,
-  //             timer: 1500,
-  //           });
-  //         });
-  //     }
-  //   });
-  // };
+  };
 
   let dataList = "";
 
   if (loading) {
     return <h6>Loading...</h6>;
   } else {
-    dataList = data.map((row) => {
+    dataList = paginatedData.map((row) => {
       return (
-        <tr key={row._id}>
-          {/* <td>{row.id}</td> */}
-          <td style={{ padding: "14px 4px" }}>{row.company}</td>
-          <td style={{ padding: "14px 4px" }}>{row.industry}</td>
-          <td style={{ padding: "14px 4px" }}>{row.companySize}</td>
-          <td style={{ padding: "14px 4px" }}>{row.mappedTo.join(', ')}</td>
-          {/* <td>{row.parent_id}</td> */}
-          {/* <td>
+        <tr key={row.id}>
+          <td>{row.id}</td>
+          <td style={{ padding: "14px 4px" }}>{row.name}</td>
+          <td>{row.parent_id}</td>
+          <td>
+            {/* <Link
+              to={`view-industry/${row.id}`}
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="View Industry"
+              className="btn btn-sm btn-info btn-circle mt-2"
+              style={{ borderRadius: "50%", color: "#fff" }}
+            >
+              <i class="fas fa-eye"></i>
+            </Link> */}
             &nbsp; &nbsp;
             <Link
               to={`edit-company/${row.id}`}
@@ -153,7 +132,7 @@ function AllCompanies() {
             >
               <i class="fas fa-trash"></i>
             </button>
-          </td> */}
+          </td>
         </tr>
       );
     });
@@ -193,9 +172,9 @@ function AllCompanies() {
                 <input
                   type="text"
                   placeholder="Filter by Company"
-                  value={search}
+                  value={nameFilter}
                   className="form-control"
-                  onChange={handleChange}
+                  onChange={(e) => setNameFilter(e.target.value)}
                 />
               </div>
             </div>
@@ -204,10 +183,10 @@ function AllCompanies() {
               <table className="table table-hover" width="100%" cellspacing="4">
                 <thead>
                   <tr>
-                    <th>Company</th>
-                    <th>Industry</th>
-                    <th>Employee Size</th>
-                    <th>Mapped To</th>
+                    <th>ID</th>
+                    <th>Company Name</th>
+                    <th>Parent</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -225,7 +204,7 @@ function AllCompanies() {
 
               {/* Pagination */}
               <nav aria-label="Page navigation comments" className="mt-4">
-                {data.length > 0 && (
+                {filteredData.length > 0 && (
                   <ReactPaginate
                     previousLabel="<< Previous"
                     nextLabel="Next >>"
@@ -234,7 +213,7 @@ function AllCompanies() {
                     breakLinkClassName="page-link"
                     pageRangeDisplayed={4}
                     marginPagesDisplayed={2}
-                    pageCount={Math.ceil(totalCompanies / itemsPerPage)}
+                    pageCount={Math.ceil(filteredData.length / itemsPerPage)}
                     onPageChange={({ selected }) =>
                       handlePageChange(selected + 1)
                     }
