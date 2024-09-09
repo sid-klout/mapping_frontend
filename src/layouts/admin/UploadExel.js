@@ -5,7 +5,6 @@ import * as XLSX from 'xlsx';
 import swal from "sweetalert";
 import ReactPaginate from 'react-paginate';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './uploadExcel.css';
 
 const UploadExcel = () => {
   const [data, setData] = useState([]);
@@ -66,7 +65,7 @@ const UploadExcel = () => {
     formData.append('file', file);
     formData.append('userId', localStorage.getItem('userId'));
     try {
-      const response = await axios.post('/user/uploadICP', formData, {
+      const response = await axios.post('https://app.klout.club/api/mapping/v1/premium-data/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -110,40 +109,44 @@ const UploadExcel = () => {
             {data.length > 0 && (
               <>
                 <button className='btn btn-success px-4 mb-2 ms-auto d-flex' onClick={handleUploadICP}>Upload</button>
-                <table className='table table-striped table-bordered'>
-                  <thead>
-                    <tr>
-                      {headers.map((header, index) => (
-                        <th key={index}>{header.toUpperCase()}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentData.map((row, rowIndex) => (
-                      <tr key={rowIndex}>
-                        {headers.map((header, colIndex) => (
-                          <td key={colIndex}>{row[header]}</td>
+                <div style={{ overflowX: 'auto' }}>
+                  <table className='table table-striped table-bordered' style={{ minWidth: '100%' }}>
+                    <thead>
+                      <tr>
+                        {headers.map((header, index) => (
+                          <th key={index}>{header.toUpperCase()}</th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <ReactPaginate
-                  previousLabel={"Previous"}
-                  nextLabel={"Next"}
-                  pageCount={Math.ceil(data.length / entriesPerPage)}
-                  onPageChange={handlePageClick}
-                  containerClassName={"pagination justify-content-center"}
-                  pageClassName={"page-item"}
-                  pageLinkClassName={"page-link"}
-                  previousClassName={"page-item"}
-                  previousLinkClassName={"page-link"}
-                  nextClassName={"page-item"}
-                  nextLinkClassName={"page-link"}
-                  breakClassName={"page-item"}
-                  breakLinkClassName={"page-link"}
-                  activeClassName={"active"}
-                />
+                    </thead>
+                    <tbody>
+                      {currentData.map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          {headers.map((header, colIndex) => (
+                            <td key={colIndex} style={{ whiteSpace: 'nowrap' }}>{row[header]}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div style={{ marginTop: '20px' }}>
+                  <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    pageCount={Math.ceil(data.length / entriesPerPage)}
+                    onPageChange={handlePageClick}
+                    containerClassName={"pagination justify-content-center"}
+                    pageClassName={"page-item"}
+                    pageLinkClassName={"page-link"}
+                    previousClassName={"page-item"}
+                    previousLinkClassName={"page-link"}
+                    nextClassName={"page-item"}
+                    nextLinkClassName={"page-link"}
+                    breakClassName={"page-item"}
+                    breakLinkClassName={"page-link"}
+                    activeClassName={"active"}
+                  />
+                </div>
               </>
             )}
           </div>

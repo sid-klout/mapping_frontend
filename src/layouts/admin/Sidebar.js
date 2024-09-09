@@ -333,7 +333,11 @@ function Sidebar({ menuOpen, setMenuOpen, toggleMenu }) {
               <Link to="/admin/upload-excel" className="collapse-item">
                 Upload Excel
               </Link>
+              <Link to="/admin/view-excel" className="collapse-item">
+                View Excel
+              </Link>
             </div>
+            
           </div>
         </li>
 

@@ -43,6 +43,7 @@ import ViewUserDetails from "../layouts/admin/ViewUserDetails";
 import ConcernUsers from "../layouts/admin/concernUsers";
 import Dashboard2 from "../layouts/admin/Dashboard2";
 import UploadExel from "../layouts/admin/UploadExel";
+import ViewExcel from "../layouts/admin/ViewExcel";
 
 const routes = [
   { path: "/admin", exact: true, name: "Admin", component: Dashboard2 },
@@ -287,6 +288,12 @@ const routes = [
     name: "UploadExcel",
     component: UploadExel,
   },
+  {
+    path: "/admin/view-excel",
+    exact: true,
+    name: "ViewExcel",
+    component: ViewExcel,
+  }
   
 ];
 
