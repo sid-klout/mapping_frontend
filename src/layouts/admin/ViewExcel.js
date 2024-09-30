@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import Modal from "react-modal";
+
+// Define modal styles
+const customStyles = {
+    content: {
+        top: "50%",
+        left: "50%",
+        right: "auto",
+        bottom: "auto",
+        marginRight: "-50%",
+        transform: "translate(-50%, -50%)",
+    },
+};
 
 const ViewExcel = () => {
     const [premiumData, setPremiumData] = useState([]);
@@ -10,9 +23,26 @@ const ViewExcel = () => {
     const [searchQuery, setSearchQuery] = useState(""); // Search query
     const [searchColumn, setSearchColumn] = useState("first_name"); // Default search column
 
+    // For modal and editing
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [currentEditData, setCurrentEditData] = useState({});
+
+    const customStyles = {
+        content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            width: "80%", // Increased width
+            maxWidth: "1000px", // Max width limit
+        },
+    };
+
     const fetchPremiumData = async () => {
         try {
-            const response = await axios.get("https://app.klout.club/api/mapping/v1/premium-data/all");
+            const response = await axios.get("https://app.klout.club/api/mapping/v1/premium-data/all"); // Replace with actual API
             const data = response.data.data;
             setPremiumData(data);
         } catch (error) {
@@ -67,10 +97,45 @@ const ViewExcel = () => {
             pageNumbers.push(i);
         }
 
-        // Display page numbers with a limited range
         const start = Math.max(1, currentPage - 2);
         const end = Math.min(totalPages, currentPage + 2);
         return pageNumbers.slice(start - 1, end);
+    };
+
+    // Handle edit button click
+    const openEditModal = (item) => {
+        setCurrentEditData(item); // Set the current data to edit
+        setModalIsOpen(true); // Open modal
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false); // Close modal
+        setCurrentEditData({}); // Clear edit data
+    };
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setCurrentEditData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    const handleSaveChanges = async () => {
+        console.log(currentEditData)
+        try {
+            // Send API request to update the data
+            await axios.patch(`https://app.klout.club/api/mapping/v1/premium-data/update`, {...currentEditData, id: currentEditData._id}, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            // Fetch the updated data
+            fetchPremiumData();
+            closeModal();
+        } catch (error) {
+            console.error("Error updating data:", error);
+        }
     };
 
     return (
@@ -134,6 +199,7 @@ const ViewExcel = () => {
                                     value={searchColumn}
                                     onChange={handleSearchColumnChange}
                                 >
+                                    {/* Add your search column options here */}
                                     <option value="first_name">First Name</option>
                                     <option value="last_name">Last Name</option>
                                     <option value="job_title">Job Title</option>
@@ -145,7 +211,10 @@ const ViewExcel = () => {
                                     <option value="website">Website</option>
                                     <option value="employee_size">Employee Size</option>
                                     <option value="company_turn_over">Company Turn Over</option>
-                                    <option value="linkedin_page_link">LinkedIn Page Link</option>
+                                    <option value="linkedin_page_link">Linkedin Page Link</option>
+                                    <option value="country">Country</option>
+                                    <option value="job_function">Job Function</option>
+                                    
                                 </select>
                             </div>
                             <div className="col-md-4 mt-3">
@@ -175,6 +244,9 @@ const ViewExcel = () => {
                                         <th>employee_size</th>
                                         <th>company_turn_over</th>
                                         <th>linkedin_page_link</th>
+                                        <th>country</th>
+                                        <th>job_function</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -192,13 +264,22 @@ const ViewExcel = () => {
                                             <td style={{ whiteSpace: 'nowrap' }}>{item.employee_size || ""}</td>
                                             <td style={{ whiteSpace: 'nowrap' }}>{item.company_turn_over || ""}</td>
                                             <td style={{ whiteSpace: 'nowrap' }}>{item.linkedin_page_link || ""}</td>
+                                            <td style={{ whiteSpace: 'nowrap' }}>{item.country || ""}</td>
+                                            <td style={{ whiteSpace: 'nowrap' }}>{item.job_function || ""}</td>
+                                            <td>
+                                                <button
+                                                    className="btn btn-primary"
+                                                    onClick={() => openEditModal(item)}
+                                                >
+                                                    Edit
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
 
-                        {/* Pagination Controls */}
                         <nav aria-label="Page navigation" style={{ marginTop: '20px' }}>
                             <ul className="pagination justify-content-center">
                                 <li className="page-item">
@@ -234,6 +315,176 @@ const ViewExcel = () => {
                                 </li>
                             </ul>
                         </nav>
+
+                        {/* Modal for editing data */}
+                        <Modal
+                            isOpen={modalIsOpen}
+                            onRequestClose={closeModal}
+                            style={customStyles}
+                            contentLabel="Edit Data"
+
+                        >
+                            <h2>Edit Data</h2>
+                            <form>
+                                <div className="row">
+                                    <div className="form-group col-3">
+                                        <label>First Name</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="first_name"
+                                            value={currentEditData.first_name || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-group col-3">
+                                        <label>Last Name</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="last_name"
+                                            value={currentEditData.last_name || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-group col-3">
+                                        <label>Job Title</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="job_title"
+                                            value={currentEditData.job_title || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-group col-3">
+                                        <label>Company Name</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="company_name"
+                                            value={currentEditData.company_name || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-group col-3">
+                                        <label>Industry</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="industry"
+                                            value={currentEditData.industry || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-group col-3">
+                                        <label>Email</label>
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            name="email"
+                                            value={currentEditData.email || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-group col-3">
+                                        <label>Phone Number</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="phone_number"
+                                            value={currentEditData.phone_number || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-group col-3">
+                                        <label>Alternate Mobile Number</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="alternate_mobile_number"
+                                            value={currentEditData.alternate_mobile_number || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-group col-3">
+                                        <label>Website</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="website"
+                                            value={currentEditData.website || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-group col-3">
+                                        <label>Employee Size</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="employee_size"
+                                            value={currentEditData.employee_size || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-group col-3">
+                                        <label>Company Turnover</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="company_turn_over"
+                                            value={currentEditData.company_turn_over || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-group col-3">
+                                        <label>LinkedIn Page Link</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="linkedin_page_link"
+                                            value={currentEditData.linkedin_page_link || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-group col-3">
+                                        <label>Country</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="country"
+                                            value={currentEditData.country || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-group col-3">
+                                        <label>Job Function</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="job_function"
+                                            value={currentEditData.job_function || ""}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-primary mt-3"
+                                    onClick={handleSaveChanges}
+                                >
+                                    Save Changes
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary mt-3 ms-3"
+                                    onClick={closeModal}
+                                >
+                                    Cancel
+                                </button>
+                            </form>
+                        </Modal>
                     </div>
                 </div>
             </div>

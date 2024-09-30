@@ -433,6 +433,13 @@ function Sidebar({ menuOpen, setMenuOpen, toggleMenu }) {
           </Link>
         </li>
 
+        <li className="nav-item">
+          <Link to="/admin/notification-report" className="nav-link">
+            <i className="fas fa-bell"></i>
+            <span>Pushed Notification Report</span>
+          </Link>
+        </li>
+
         {/* <!-- Block Users --> */}
         <li className="nav-item">
           <Link className="nav-link" to="/admin/block-users">

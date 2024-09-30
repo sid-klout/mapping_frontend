@@ -44,6 +44,7 @@ import ConcernUsers from "../layouts/admin/concernUsers";
 import Dashboard2 from "../layouts/admin/Dashboard2";
 import UploadExel from "../layouts/admin/UploadExel";
 import ViewExcel from "../layouts/admin/ViewExcel";
+import Notification from "../layouts/admin/Notification";
 
 const routes = [
   { path: "/admin", exact: true, name: "Admin", component: Dashboard2 },
@@ -293,6 +294,13 @@ const routes = [
     exact: true,
     name: "ViewExcel",
     component: ViewExcel,
+  },
+
+  {
+    path: "/admin/notification-report",
+    exact: true,
+    name: "Notification",
+    component: Notification,
   }
   
 ];
